@@ -1,0 +1,23 @@
+# Dependințe și build
+node_modules/
+.next/
+out/
+
+# Baza de date locală a salvărilor (Faza 6)
+data/
+
+# Mediu și secrete — NICIODATĂ în git
+.env
+.env.local
+.env*.local
+
+# Loguri
+*.log
+npm-debug.log*
+
+# Sistem / editoare
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
