@@ -99,9 +99,9 @@ name starts with a dot: `.env.local`. Here's how, without mistakes:
 4. Open the file with **Notepad** (right-click → Open with → Notepad)
 5. You'll see the line `GEMINI_API_KEY=your_key_here_no_quotes`
 6. Replace everything after `=` with your copied code.
-   The line must look like this (this is an example, yours differs):
+   The line must look like this (with YOUR real key pasted after the `=` sign):
    ```
-   GEMINI_API_KEY=AIzaSyB1234567890abcdefgHIJKLMNoPQRsTUV
+   GEMINI_API_KEY=paste_your_copied_key_here
    ```
 7. Save (Ctrl+S) and close
 
