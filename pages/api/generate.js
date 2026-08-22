@@ -5,11 +5,11 @@ import { runAiWaterfall, extractJson } from "../../lib/aiWaterfall";
 // Tier 1 of the cascade (Gemini). Continuation: Groq/Cerebras → local Ollama,
 // handled transparently by lib/aiWaterfall.js.
 const CANDIDATE_MODELS = [
+  "gemini-3.7-flash",
   "gemini-flash-latest",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-flash",
-  "gemini-3.5-flash-lite",
   "gemini-3.5-flash",
+  "gemini-3.1-flash-lite",
+  "gemini-2.5-flash-lite",
 ];
 
 const RATE_LIMIT_PER_MINUTE = 5;
