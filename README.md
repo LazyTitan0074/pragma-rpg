@@ -123,13 +123,25 @@ Full hand-holding walkthrough: **[SETUP_GUIDE.md](SETUP_GUIDE.md)**.
 
 - [x] Complete campaign generator (premise, lore, sandbox/missions, NPCs, endings)
 - [x] Live AI Dungeon Master (turn-by-turn chat)
-- [x] Automatic local saving + saved-campaign manager
-- [x] Extended DM memory (automatic rolling story summary)
-- [x] AI safety nets: free Groq fallback + emergency local Ollama
+- [x] Automatic local saving + saved-campaign manager + cross-device sync
+- [x] Extended DM memory (rolling story summary + 🧾 story bible fact ledger)
+- [x] AI safety nets: Groq → Mistral → emergency local Ollama
 - [x] Content maturity filters 13+/16+/18+/21+ with a visual selector
-- [x] Character creator from free text, with visual editor and library
+- [x] Character creator from free text, with visual editor and cross-device library
+- [x] 🎭 NPC mode: play your own protagonist against a DM-played central character
 - [x] Professional exports: Obsidian, Foundry VTT, elegant PDF
 - [ ] Local AI as primary engine (Ollama) — awaiting stronger hardware
+
+---
+
+## 🤖 Credits
+
+This entire project — every line of code, the 91-test suite, the docs and this very README — was built in **4 days** by a **20-year-old with zero prior coding experience**, pair-programming the whole way with an AI coding agent:
+
+> **Ox Alpha Free (Unlimited)** · via **OpenCode Zen**
+> ~3,000,000 credits burned · 91 automated tests kept green · 1 very surprised developer
+
+If you ever thought *"I could never build something like this"* — this repo is proof that you can. Pick an idea, open an editor, invite an AI to your table, and go make something.
 
 ---
 
