@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../lib/uiTheme";
 
-// Local character library — modal with activate, export and delete
+// Local character library — modal with activation, export, and deletion
 // (extracted from the monolith, audit R10).
 export default function CharactersLibrary({ characters, activeName, onClose, onUse, onDelete, onExport }) {
   const t = useContext(ThemeContext);
@@ -19,7 +19,7 @@ export default function CharactersLibrary({ characters, activeName, onClose, onU
     }}>
       <div style={{
         background: t.modalBg,
-        border: `2px solid ${t.gold}`,
+        border: "2px solid #8a6d3b",
         borderRadius: 6,
         width: "100%",
         maxWidth: 700,
@@ -28,19 +28,19 @@ export default function CharactersLibrary({ characters, activeName, onClose, onU
         flexDirection: "column",
         boxShadow: "0 10px 30px rgba(0,0,0,0.8)",
       }}>
-        <div style={{ padding: "18px 24px", borderBottom: `1px solid ${t.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ padding: "18px 24px", borderBottom: "1px solid #3a3730", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, margin: 0, color: t.textBright }}>
               👥 Character Library ({characters.length})
             </h3>
             <span style={{ fontSize: 13, color: t.textMuted }}>
-              Created by you with AI or imported from JSON files
+              Created by you with AI, or imported from JSON files
             </span>
           </div>
           <button
             onClick={onClose}
             className="laramono"
-            style={{ background: t.btnSecondary, border: `1px solid ${t.borderSoft}`, color: t.textMid, padding: "6px 12px", fontSize: 12 }}
+            style={{ background: t.btnSecondary, border: "1px solid #4a3e2b", color: t.textMid, padding: "6px 12px", fontSize: 12 }}
           >
             ✕ CLOSE
           </button>
@@ -49,7 +49,7 @@ export default function CharactersLibrary({ characters, activeName, onClose, onU
         <div style={{ padding: "20px 24px", overflowY: "auto", flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
           {characters.length === 0 ? (
             <div style={{ padding: "40px 20px", textAlign: "center", color: t.textMuted }}>
-              <p style={{ fontSize: 16, margin: "0 0 8px", color: t.textMid }}>The library is still empty.</p>
+              <p style={{ fontSize: 16, margin: "0 0 8px", color: t.textMid }}>Your library is still empty.</p>
               <p style={{ fontSize: 14, margin: 0 }}>Open <b>🎭 CHARACTER CREATOR</b> and describe your first hero, or import a character JSON file.</p>
             </div>
           ) : (
@@ -61,7 +61,7 @@ export default function CharactersLibrary({ characters, activeName, onClose, onU
                   className="card-hover"
                   style={{
                     background: isActive ? t.cardActive : t.panel,
-                    border: isActive ? `1px solid ${t.gold}` : `1px solid ${t.border}`,
+                    border: isActive ? "1px solid #8a6d3b" : "1px solid #3a3730",
                     padding: "14px 16px",
                     borderRadius: 4,
                     display: "flex",
@@ -81,21 +81,21 @@ export default function CharactersLibrary({ characters, activeName, onClose, onU
                       )}
                     </div>
                     <div style={{ fontSize: 13, color: t.textDimmer, overflow: "hidden", textOverflow: "ellipsis" }}>
-                      🎭 <b>{item.role || "No role"}</b> &nbsp;|&nbsp; 🌍 {item.universe || "Undefined universe"}
+                      🎭 <b>{item.role || "No role"}</b> &nbsp;|&nbsp; 🌍 {item.universe || "Unknown universe"}
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <button
                       onClick={() => onUse(item)}
                       className="laramono"
-                      style={{ background: t.gold, color: t.bg, border: `1px solid ${t.goldBright}`, padding: "8px 14px", fontSize: 11, fontWeight: 700 }}
+                      style={{ background: t.gold, color: t.bg, border: "1px solid #d4af37", padding: "8px 14px", fontSize: 11, fontWeight: 700 }}
                     >
                       ▶️ USE
                     </button>
                     <button
                       onClick={() => onExport(item)}
                       className="laramono"
-                      style={{ background: t.btnSecondary, border: `1px solid ${t.borderSoft}`, color: t.textDim, padding: "8px 10px", fontSize: 11 }}
+                      style={{ background: t.btnSecondary, border: "1px solid #4a3e2b", color: t.textDim, padding: "8px 10px", fontSize: 11 }}
                       title="Download JSON file"
                     >
                       📥
@@ -103,7 +103,7 @@ export default function CharactersLibrary({ characters, activeName, onClose, onU
                     <button
                       onClick={(e) => onDelete(item.id, e)}
                       className="laramono"
-                      style={{ background: t.dangerBg, border: `1px solid ${t.danger}`, color: t.dangerText, padding: "8px 10px", fontSize: 11 }}
+                      style={{ background: t.dangerBg, border: "1px solid #6b2a2a", color: t.dangerText, padding: "8px 10px", fontSize: 11 }}
                       title="Remove from library"
                     >
                       🗑️

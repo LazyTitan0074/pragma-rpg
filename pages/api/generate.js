@@ -2,7 +2,8 @@ import { buildPrompt, validateCampaign, maturityLabel } from "../../lib/prompt";
 import { checkRateLimit } from "../../lib/rateLimit";
 import { runAiWaterfall, extractJson } from "../../lib/aiWaterfall";
 
-// Tier 1 of the cascade (Gemini). Continuation: Groq/Cerebras → local Ollama,
+// Level 1 of the cascade (Gemini, only for 13+/16+). For adult content (18+/21+)
+// Gemini is skipped; the continuation is Groq → Mistral → local Ollama,
 // handled transparently by lib/aiWaterfall.js.
 const CANDIDATE_MODELS = [
   "gemini-3.7-flash",
@@ -26,30 +27,41 @@ export default async function handler(req, res) {
     });
   }
 
-  const { character, variant, length, maturity } = req.body || {};
+  const { character, variant, length, maturity, npcMode, protagonist } = req.body || {};
   if (!character) {
     return res.status(400).json({ error: "Missing character (character JSON)." });
   }
 
-  const prompt = buildPrompt(character, variant, length, maturity);
+  const prompt = buildPrompt(character, variant, length, maturity, {
+    npcMode: Boolean(npcMode),
+    protagonist: protagonist && typeof protagonist === "object" ? protagonist : null,
+  });
 
   console.log("=== NEW CAMPAIGN GENERATION ===");
-  // No character name in logs (audit R12): configuration parameters only.
-  console.log("Variant:", variant, "| Length:", length, "| Maturity:", maturityLabel(maturity));
+  // The character's name never goes into the logs (R12 audit): config params only.
+  console.log("Variant:", variant, "| Length:", length, "| Maturity:", maturityLabel(maturity), "| NPC mode:", npcMode ? "yes" : "no");
   console.log("===============================");
 
-  // A missing Gemini key no longer kills the request with 500: the cascade
-  // moves on to the next tiers (Groq / local Ollama).
+  // Long campaigns produce JSON beyond Groq's 4096-token cap
+  // (measured live on Aug 23: the Groq attempt always fails and just wastes time) —
+  // for the long variant ("lunga") the provider with the big cap (Mistral, 8192) tries first.
+  const preferProvider = length === "lunga" ? "mistral" : undefined;
+  if (preferProvider) console.log('Long campaign ("lunga") → cascade with', preferProvider, "first in line");
+
+  // Without a Gemini key configured the request no longer dies with a 500: the
+  // cascade moves on automatically to the next levels (Groq / local Ollama).
   const result = await runAiWaterfall({
-    label: "Generate",
+    label: "Generation",
     turns: [{ role: "user", text: prompt }],
     jsonMode: true,
     maxTokens: 8192,
     temperature: 0.7,
     geminiModels: CANDIDATE_MODELS,
+    maturity,
+    preferProvider,
     processText(raw) {
       const campaign = validateCampaign(JSON.parse(extractJson(raw)));
-      // The displayed rating follows the user's selector choice.
+      // The displayed rating follows the user's choice from the visual selector.
       campaign.maturity_rating = maturityLabel(maturity);
       return campaign;
     },

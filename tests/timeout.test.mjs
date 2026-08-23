@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import http from "node:http";
 
-// Exact replica of the classification in pages/api/*.js
+// Exact replica of the classification from pages/api/*.js
 const isTimeout = (err) => err?.name === "TimeoutError";
 
 // Local server that accepts connections but never responds
@@ -14,7 +14,7 @@ async function startHangingServer() {
   return server;
 }
 
-test("fetch to a non-responsive server => TimeoutError on expiry", async () => {
+test("fetch to a server that never responds => TimeoutError on expiry", async () => {
   const server = await startHangingServer();
   const { port } = server.address();
   try {
@@ -34,8 +34,8 @@ test("fetch to a non-responsive server => TimeoutError on expiry", async () => {
   }
 });
 
-test("connection refused (ECONNREFUSED) is NOT classified as TimeoutError", async () => {
-  // Find a guaranteed-free port and release it before the call
+test("refused connection (ECONNREFUSED) is NOT classified TimeoutError", async () => {
+  // find a guaranteed-free port and release it before the call
   const temp = http.createServer();
   await new Promise((resolve) => temp.listen(0, "127.0.0.1", resolve));
   const { port } = temp.address();

@@ -3,32 +3,32 @@ import assert from "node:assert/strict";
 import { CHARACTER_FIELDS, validateCharacterSheet } from "../lib/characters.js";
 
 const full = {
-  name: "Mara Voss",
-  role: "Wandering witch",
+  name: "Mara Vlaicu",
+  role: "Itinerant witch",
   universe: "Transylvania, 1872",
-  appearance: "Slim silhouette, black hair with silver strands",
+  appearance: "Slim figure, black hair with silver strands",
   personality: "Cold with strangers, warm with the wounded",
-  speech: "Low, measured, thoughtful pauses",
-  philosophy: "Power left undivided is power lost",
+  speech: "Low, rhythmic, with thoughtful pauses",
+  philosophy: "Undivided power is power lost",
   connections: "A monastery that owes her a secret",
-  secrets: "She has not aged since 1812",
+  secrets: "Has not aged since 1812",
 };
 
-test("a complete sheet passes through untouched (trimmed at edges)", () => {
-  const out = validateCharacterSheet({ ...full, name: "  Mara Voss  " });
-  assert.equal(out.name, "Mara Voss");
+test("full sheet passes untouched (with edge trim)", () => {
+  const out = validateCharacterSheet({ ...full, name: "  Mara Vlaicu  " });
+  assert.equal(out.name, "Mara Vlaicu");
   for (const f of CHARACTER_FIELDS) assert.equal(typeof out[f.key], "string");
 });
 
 test("missing name → rejected with a clear message", () => {
   const { name, ...withoutName } = full;
-  assert.throws(() => validateCharacterSheet(withoutName), /name/);
+  assert.throws(() => validateCharacterSheet(withoutName), /missing its name/);
 });
 
-test("non-object input or array → rejected", () => {
-  assert.throws(() => validateCharacterSheet(null), /valid object/);
-  assert.throws(() => validateCharacterSheet("text"), /valid object/);
-  assert.throws(() => validateCharacterSheet([full]), /valid object/);
+test("non-object or array input → rejected", () => {
+  assert.throws(() => validateCharacterSheet(null), /not a valid object/);
+  assert.throws(() => validateCharacterSheet("text"), /not a valid object/);
+  assert.throws(() => validateCharacterSheet([full]), /not a valid object/);
 });
 
 test("non-string values become empty strings, not errors", () => {
@@ -38,14 +38,14 @@ test("non-string values become empty strings, not errors", () => {
   assert.equal(out.name, full.name);
 });
 
-test("foreign keys coming from the AI are dropped", () => {
+test("foreign keys coming from the AI are discarded", () => {
   const out = validateCharacterSheet({ ...full, power_level: 9000, npc: ["x"] });
   assert.ok(!("power_level" in out));
   assert.deepEqual(Object.keys(out).sort(), CHARACTER_FIELDS.map((f) => f.key).sort());
 });
 
-test("empty secondary fields are allowed when name + role/universe exist", () => {
-  const minimal = validateCharacterSheet({ name: "John", role: "Lighthouse keeper", universe: "" });
-  assert.throws(() => validateCharacterSheet({ name: "John", role: "", universe: "" }), /too thin/);
+test("empty secondary fields are allowed if name + role/universe exist", () => {
+  const minimal = validateCharacterSheet({ name: "Ion", role: "Lighthouse keeper", universe: "" });
+  assert.throws(() => validateCharacterSheet({ name: "Ion", role: "", universe: "" }), /too sparse/);
   assert.equal(minimal.universe, "");
 });

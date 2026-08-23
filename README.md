@@ -4,6 +4,16 @@
 
 > 🎓 **First time installing anything?** Read **[SETUP_GUIDE.md](SETUP_GUIDE.md)** first — a step-by-step guide for people with zero technical experience. This README covers everyday use.
 
+## 🆕 What's new in v2.0
+
+- **🎭 NPC mode** — load a character sheet as the story's **central NPC played by the DM**, while you play a separate protagonist (or let the DM shape one from context). Persisted per campaign.
+- **🧾 Story bible** — a fact ledger (decisions · NPCs · promises & secrets · items · open threads) that survives memory compression; states update as the story unfolds ("active" → "fulfilled").
+- **👥 Shared character library** — sheets live on the server and follow you across devices, deletions included.
+- **🌊 Smarter AI cascade** — Gemini → Groq → **Mistral** → Cerebras → local Ollama, maturity-aware; long campaigns route straight to the provider that can handle their size. Generation progress shows elapsed seconds and which model won (`⚙ gpt-oss-120b (Groq) · 3s`).
+- **🗑️ Deletion sync** — delete on one device, gone everywhere (tombstones).
+- **⏳ Polite rate limits** — the client waits and retries automatically instead of showing raw errors.
+- **🧠 Richer DM memory** — summary triggers at 60 messages keeping the last 24 verbatim; structured ~500-word summaries in five labeled sections.
+
 ---
 
 ## 📖 What is Pragma? (Explained simply)
@@ -37,14 +47,14 @@ Press the golden **START THE STORY LIVE** button. The Game Master describes the 
 
 ### Step 5: Saves are automatic 💾
 - Everything saves as you play — you can't lose a story by accident.
-- **📂 SAVED CAMPAIGNS** opens the manager: open where you left off, **duplicate** (alternate branches!), delete. The latest **20 campaigns** are kept.
+- **📂 SAVED CAMPAIGNS** opens the manager: open where you left off, **duplicate** (alternate branches!), delete. The latest **30 campaigns** are kept locally — full history lives on the server.
 - **Exports**: `📥 EXPORT JSON` (full save) · `👤 EXPORT CHARACTER` · `EXPORT MARKDOWN` · `🌿 OBSIDIAN` (tags + `[[NPC links]]`) · `🎲 FOUNDRY VTT` (journals + NPC sheets) · `📄 PDF` (elegant print view → Save as PDF).
-- **👥 CHARACTERS** opens your character library (max 30, one-click switching).
+- **👥 CHARACTERS** opens the character library (max 60) — **synced across your devices** via the server, with deletions propagated too.
 
-> ℹ️ To protect the free AI quota, the app rate-limits itself: max **5 generations** and **20 chat messages** per minute. If you spam, you get a friendly message with the waiting time.
+> ℹ️ To protect the free AI quota, the app rate-limits itself: max **5 generations**, **20 chat messages**, **10 summaries** and **6 character creations** per minute. If you hit a limit, the app waits politely and retries automatically.
 
 ### Themes 🎨
-Three visual themes in the header selector: **Dark Gold** (classic), **Ancient Parchment** and **Modern Dark**. Your choice is remembered.
+Three visual themes in the header selector: **Dark Gold** (classic), **Antique Parchment** and **Modern Dark**. Your choice is remembered.
 
 ---
 
@@ -64,15 +74,19 @@ Three visual themes in the header selector: **Dark Gold** (classic), **Ancient P
 | **`pages/api/summarize.js`** | **The story archivist**: compresses long chat history into a rolling summary (10/min). |
 | **`pages/api/create-character.js`** | Turns a free-text description into a complete character sheet (6/min). |
 | **`pages/api/saves.js`** | **The synchroniser**: keeps campaigns on the server so phone and PC see the same list. |
-| **`lib/prompt.js`** | **The rulebook**: tone variants, content-maturity rules, the JSON schema and its validation. |
-| **`lib/aiWaterfall.js`** | **The fallback cascade**: orders AI providers (Gemini → Groq/Cerebras → local Ollama). |
+| **`pages/api/characters.js`** | **The shared character library**: server-side sheets, synced across devices (v2.0). |
+| **`lib/prompt.js`** | **The rulebook**: tone variants, content-maturity rules, the JSON schema and its validation, NPC-mode framing. |
+| **`lib/aiWaterfall.js`** | **The fallback cascade**: Gemini → Groq → Mistral → Cerebras → local Ollama, maturity-aware (v2.0 adds Mistral + long-campaign routing). |
 | **`lib/rateLimit.js`** | **The rhythm guardian**: per-minute request limiting to protect the free quota. |
-| **`lib/storyMemory.js`** | **The DM's memory**: thresholds and history trimming for the rolling summary. |
+| **`lib/storyMemory.js`** | **The DM's memory**: rolling summary thresholds + the story bible fact ledger. |
 | **`lib/characters.js`** | Character sheet schema + validation. |
+| **`lib/clientFetch.js`** | Polite client fetch: automatic retry with backoff on rate limits (v2.0). |
 | **`lib/exporters.js`** | Markdown/Obsidian/Foundry VTT exports, print view, list merging. |
 | **`lib/uiTheme.js`** | Visual themes (Dark Gold / Parchment / Modern Dark) via ThemeContext. |
-| **`lib/savesDb.js`** | **The campaign vault**: server-side SQLite saves database. |
-| **`tests/`** | Automated test suite (`node --test`, 47 tests, no dependencies). |
+| **`lib/savesDb.js`** | **The campaign vault**: server-side SQLite saves database (+ deletion tombstones, v2.0). |
+| **`lib/charactersDb.js`** | **The character vault**: server-side SQLite library (v2.0). |
+| **`scripts/e2e/sync-smoke.mjs`** | Real-browser smoke test (headless Edge) — run it after deploying. |
+| **`tests/`** | Automated test suite (`node --test`, 91 tests, no runtime dependencies). |
 | **`DOCUMENTATION.md`** | Full technical documentation (for developers). |
 | **`package.json`** | **The parts list**: Next.js + React. |
 

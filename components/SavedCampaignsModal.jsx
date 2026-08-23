@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
 import { ThemeContext } from "../lib/uiTheme";
 
-// Saved-campaigns manager — modal with list, open, duplicate, JSON export and
-// delete (extracted from the monolith, audit R10).
+// Saved campaign manager — modal with listing, opening, duplication,
+// JSON export, and deletion (extracted from the monolith, audit R10).
 export default function SavedCampaignsModal({ campaigns, currentId, onClose, onLoad, onDuplicate, onDelete, onExport }) {
   const t = useContext(ThemeContext);
   return (
@@ -19,7 +19,7 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
     }}>
       <div style={{
         background: t.modalBg,
-        border: `2px solid ${t.gold}`,
+        border: "2px solid #8a6d3b",
         borderRadius: 6,
         width: "100%",
         maxWidth: 760,
@@ -29,19 +29,19 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
         boxShadow: "0 10px 30px rgba(0,0,0,0.8)",
       }}>
         {/* Modal Header */}
-        <div style={{ padding: "18px 24px", borderBottom: `1px solid ${t.border}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ padding: "18px 24px", borderBottom: "1px solid #3a3730", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, margin: 0, color: t.textBright }}>
               🏛️ Your Saved Campaigns ({campaigns.length})
             </h3>
             <span style={{ fontSize: 13, color: t.textMuted }}>
-              All your stories and play sessions saved locally in your browser
+              All stories and game sessions saved locally in your browser
             </span>
           </div>
           <button
             onClick={onClose}
             className="laramono"
-            style={{ background: t.btnSecondary, border: `1px solid ${t.borderSoft}`, color: t.textMid, padding: "6px 12px", fontSize: 12 }}
+            style={{ background: t.btnSecondary, border: "1px solid #4a3e2b", color: t.textMid, padding: "6px 12px", fontSize: 12 }}
           >
             ✕ CLOSE
           </button>
@@ -51,12 +51,12 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
         <div style={{ padding: "20px 24px", overflowY: "auto", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
           {campaigns.length === 0 ? (
             <div style={{ padding: "40px 20px", textAlign: "center", color: t.textMuted }}>
-              <p style={{ fontSize: 16, margin: "0 0 8px", color: t.textMid }}>No saved campaigns yet.</p>
-              <p style={{ fontSize: 14, margin: 0 }}>Generate a new campaign and press <b>SAVE</b>, or play a few messages and it saves automatically!</p>
+              <p style={{ fontSize: 16, margin: "0 0 8px", color: t.textMid }}>You have no saved campaigns yet.</p>
+              <p style={{ fontSize: 14, margin: 0 }}>Generate a new campaign, hit the <b>SAVE</b> button, or play a few messages to autosave!</p>
             </div>
           ) : (
             campaigns.map((item) => {
-              const dateStr = item.updatedAt ? new Date(item.updatedAt).toLocaleString() : "Undated";
+              const dateStr = item.updatedAt ? new Date(item.updatedAt).toLocaleString("en-US") : "No date";
               const msgCount = Array.isArray(item.gameMessages) ? item.gameMessages.length : 0;
               const isCurrent = currentId === item.id;
 
@@ -66,7 +66,7 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
                   className="card-hover"
                   style={{
                     background: isCurrent ? t.cardActive : t.panel,
-                    border: isCurrent ? `1px solid ${t.gold}` : `1px solid ${t.border}`,
+                    border: isCurrent ? "1px solid #8a6d3b" : "1px solid #3a3730",
                     padding: "16px",
                     borderRadius: 4,
                     display: "flex",
@@ -86,16 +86,18 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
                       )}
                     </div>
                     <div style={{ fontSize: 13, color: t.textDimmer, marginBottom: 6 }}>
-                      📍 <b>{item.setting}</b> &nbsp;|&nbsp; 🎭 <b>{item.character?.name || "Character"}</b> ({item.character?.role || "Role"})
+                      {item.npcMode
+                        ? <>🎭 <b>{item.character?.name || "Character"}</b> ({item.character?.role || "Role"}) <span style={{ color: t.textMuted }}>= central NPC</span> &nbsp;|&nbsp; 🧑 you play as <b>{item.protagonist?.name || "a generic character"}</b></>
+                        : <>📍 <b>{item.setting}</b> &nbsp;|&nbsp; 🎭 <b>{item.character?.name || "Character"}</b> ({item.character?.role || "Role"})</>}
                     </div>
                     <div className="laramono" style={{ fontSize: 11, color: t.textMuted, display: "flex", gap: 14 }}>
                       <span>⏱️ {dateStr}</span>
-                      <span>💬 {msgCount} chat lines</span>
-                      <span>🌟 {item.mode === "sandbox" ? "Free Mode (Sandbox)" : "Mission-based"}</span>
+                      <span>💬 {msgCount} chat messages</span>
+                      <span>🌟 {item.mode === "sandbox" ? "Free Mode (Sandbox)" : "Mission-Based"}</span>
                     </div>
                   </div>
 
-                  {/* Campaign actions */}
+                  {/* Campaign Actions */}
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <button
                       onClick={() => onLoad(item)}
@@ -103,7 +105,7 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
                       style={{
                         background: t.gold,
                         color: t.bg,
-                        border: `1px solid ${t.goldBright}`,
+                        border: "1px solid #d4af37",
                         padding: "8px 14px",
                         fontSize: 11,
                         fontWeight: 700,
@@ -118,7 +120,7 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
                         onExport(item);
                       }}
                       className="laramono"
-                      style={{ background: t.btnSecondary, border: `1px solid ${t.borderSoft}`, color: t.textDim, padding: "8px 10px", fontSize: 11 }}
+                      style={{ background: t.btnSecondary, border: "1px solid #4a3e2b", color: t.textDim, padding: "8px 10px", fontSize: 11 }}
                       title="Download JSON file"
                     >
                       📥 JSON
@@ -126,15 +128,15 @@ export default function SavedCampaignsModal({ campaigns, currentId, onClose, onL
                     <button
                       onClick={(e) => onDuplicate(item, e)}
                       className="laramono"
-                      style={{ background: t.btnSecondary, border: `1px solid ${t.borderSoft}`, color: t.textDim, padding: "8px 10px", fontSize: 11 }}
-                      title="Clone this session as a new branch"
+                      style={{ background: t.btnSecondary, border: "1px solid #4a3e2b", color: t.textDim, padding: "8px 10px", fontSize: 11 }}
+                      title="Duplicate this session as a new branch"
                     >
                       📋
                     </button>
                     <button
                       onClick={(e) => onDelete(item.id, e)}
                       className="laramono"
-                      style={{ background: t.dangerBg, border: `1px solid ${t.danger}`, color: t.dangerText, padding: "8px 10px", fontSize: 11 }}
+                      style={{ background: t.dangerBg, border: "1px solid #6b2a2a", color: t.dangerText, padding: "8px 10px", fontSize: 11 }}
                       title="Delete save"
                     >
                       🗑️
